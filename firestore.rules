@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 사용자는 자신의 문서만 읽기/쓰기 가능
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 부모는 자신의 자녀 문서만 접근 가능
+    match /children/{childId} {
+      allow read, update, delete: if request.auth != null
+        && resource.data.parentId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.parentId == request.auth.uid;
+    }
+
+    // 일기는 해당 자녀의 부모만 접근 가능
+    match /diaries/{diaryId} {
+      allow read, update, delete: if request.auth != null
+        && isParentOfChild(resource.data.childId);
+      allow create: if request.auth != null
+        && isParentOfChild(request.resource.data.childId);
+    }
+
+    // 뱃지는 읽기만 가능 (쓰기는 Cloud Functions에서)
+    match /badges/{badgeId} {
+      allow read: if request.auth != null
+        && isParentOfChild(resource.data.childId);
+      allow write: if false;
+    }
+
+    // 질문은 인증된 사용자 모두 읽기 가능
+    match /questions/{questionId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // 통계는 해당 자녀의 부모만 읽기 가능
+    match /emotionStats/{statsId} {
+      allow read: if request.auth != null
+        && isParentOfChild(resource.data.childId);
+      allow write: if false;
+    }
+
+    // 헬퍼 함수: 자녀의 부모인지 확인
+    function isParentOfChild(childId) {
+      return get(/databases/$(database)/documents/children/$(childId)).data.parentId == request.auth.uid;
+    }
+  }
+}

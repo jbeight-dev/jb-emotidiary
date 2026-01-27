@@ -1,120 +1,140 @@
-# EmotiDiary - 감정 일기장 웹 애플리케이션 기획
+# EmotiDiary
 
-7살 아이를 위한 감정 표현 학습 도구로, 직관적이고 재미있는 인터페이스를 제공하는 프로젝트입니다.
+아이들을 위한 감정 일기장 웹 애플리케이션
 
-## 📋 프로젝트 개요
+**Live Demo**: https://emotidiary-202601.web.app
 
-**프로젝트명:** EmotiDiary (Emotion + Diary)
+## 소개
 
-**기술 Stack**
-React + TypeScript + Vite
-Tailwind CSS + Framer Motion
-Web Speech API
-Firebase (Firestore + Auth + Hosting)
+EmotiDiary는 5-9세 아동이 자신의 감정을 인식하고 표현하는 능력을 기를 수 있도록 돕는 감정 일기장입니다. 직관적인 이모티콘 선택과 음성 인식을 통해 아이들이 쉽게 일기를 작성할 수 있습니다.
 
+### 핵심 기능
 
-**목표 사용자:** 7세 전후 아동 (5-9세)
+- 10가지 감정 이모티콘 선택 (랜덤 배치)
+- 감정별 맞춤 질문 제시
+- 음성 인식(STT)으로 일기 작성
+- 다크모드/라이트모드 지원
+- 알록달록한 파스텔 그라데이션 UI
 
-**핵심 기능:** 감정 선택 → 음성 일기 작성 → 저장 및 회고
+## 기술 스택
 
-## 🎯 주요 기능 명세
+| 분류 | 기술 |
+|------|------|
+| Frontend | React 19, TypeScript, Vite |
+| Styling | Tailwind CSS v4, Framer Motion |
+| Backend | Firebase (Auth, Firestore, Storage) |
+| Hosting | Firebase Hosting |
+| 음성 인식 | Web Speech API (예정) |
 
-### 1. 감정 선택 화면
-- **7가지 감정 이모티콘**
-    - 😊 행복해요
-    - 😢 슬퍼요  
-    - 😠 화나요
-    - 😨 무서워요
-    - 😆 신나요
-    - 😤 짜증나요
-    - 😴 피곤해요
+## 시작하기
 
-- 크고 터치하기 쉬운 버튼 디자인 (최소 80x80px)
-- 이모티콘 선택 시 애니메이션 효과
+### 요구사항
 
-### 2. 맞춤형 질문 시스템
-각 감정별 질문 예시:
-- 😊 행복해요 → "오늘 무엇이 행복했나요?"
-- 😢 슬퍼요 → "무엇 때문에 슬펐나요?"
-- 😠 화나요 → "무엇 때문에 화가 났나요?"
-- 😨 무서워요 → "무엇이 무서웠나요?"
+- Node.js 18+
+- npm 9+
+- Firebase CLI
 
-### 3. 음성 인식(STT) 기능
-- **기술 스택 옵션:**
-  - Web Speech API (브라우저 내장, 무료)
-  - Google Cloud Speech-to-Text
-  - Azure Speech Services
+### 설치
 
-- **기능 요구사항:**
-  - 🎤 녹음 버튼 (빨간색 마이크 아이콘)
-  - 실시간 음성 인식 및 텍스트 변환
-  - 말하는 동안 시각적 피드백 (파형 애니메이션)
-  - 재녹음 기능
-  - 텍스트 수동 수정 가능 (부모 보조용)
+```bash
+# 저장소 클론
+git clone https://github.com/your-username/emotidiary.git
+cd emotidiary
 
-### 4. 일기 저장 및 관리
-- 날짜, 감정, 내용 저장
-- 캘린더 뷰로 과거 일기 확인
-- 감정 통계 (이번 주 가장 많이 느낀 감정)
-- 칭찬 스티커/뱃지 시스템
+# 의존성 설치
+npm install
 
-## 🎨 UI/UX 디자인 원칙
+# 환경변수 설정
+cp .env.example .env.local
+# .env.local 파일에 Firebase 설정값 입력
+```
 
-### 시각적 요소
-- 밝고 부드러운 파스텔 톤 색상
-- 큰 글씨 (최소 18px)
-- 명확한 아이콘과 이미지
-- 애니메이션과 사운드 효과로 피드백
+### 실행
 
-### 접근성
-- 간단한 네비게이션 (최대 2단계)
-- 모든 버튼에 명확한 라벨
-- 음성 안내 옵션
-- 부모 모니터링 영역 (비밀번호 보호)
+```bash
+# 개발 서버
+npm run dev
 
-## 🛠 기술 스택 제안
+# 프로덕션 빌드
+npm run build
 
-### 프론트엔드
-- **React** + TypeScript - 컴포넌트 기반 개발
-- **Tailwind CSS** - 빠른 스타일링
-- **Framer Motion** - 부드러운 애니메이션
-- **Web Speech API** - 음성 인식
+# 빌드 미리보기
+npm run preview
 
-### 백엔드 & 데이터베이스
-- **Firebase**
-  - Authentication (부모 계정)
-  - Firestore (일기 데이터)
-  - Storage (음성 파일 저장 옵션)
-- 또는 **Supabase** (오픈소스 대안)
+# Firebase 배포
+npm run deploy
+```
 
-### PWA 기능
-- 오프라인 사용 가능
-- 홈 화면에 추가
-- 푸시 알림 (일기 작성 리마인더)
+## 프로젝트 구조
 
-## 📱 화면 구성
+```
+src/
+├── components/
+│   ├── common/          # Button, Card, Layout, ThemeToggle
+│   └── emotion/         # EmotionButton, EmotionGrid
+├── constants/
+│   └── emotions.ts      # 10가지 감정 데이터
+├── contexts/
+│   └── ThemeContext.tsx # 다크모드 상태 관리
+├── lib/
+│   └── firebase.ts      # Firebase 초기화
+├── pages/
+│   ├── HomePage.tsx     # 감정 선택 화면
+│   └── DiaryWritePage.tsx
+├── services/
+│   ├── auth.ts          # 인증 서비스
+│   ├── diary.ts         # 일기 CRUD
+│   └── child.ts         # 자녀 프로필 CRUD
+├── types/
+│   └── index.ts         # TypeScript 타입
+└── App.tsx              # 라우팅
+```
 
-1. **홈 화면** - 오늘의 감정 선택
-2. **질문 화면** - 맞춤 질문 + STT 버튼
-3. **일기 확인** - 작성한 내용 검토 및 수정
-4. **저장 완료** - 칭찬 메시지 + 스티커
-5. **캘린더** - 과거 일기 보기
-6. **통계** - 감정 트렌드 그래프
+## 개발 현황
 
-## 🚀 개발 단계
+### Phase 1: 기본 UI ✅
+- [x] Vite + React + TypeScript 설정
+- [x] Tailwind CSS + Framer Motion
+- [x] 감정 선택 UI (10가지, 랜덤 배치)
+- [x] 일기 작성 화면
+- [x] 다크모드/라이트모드
+- [x] Firebase Hosting 배포
 
-**Phase 1:** 기본 UI + 감정 선택 기능  
-**Phase 2:** STT 통합 및 일기 작성  
-**Phase 3:** 데이터 저장 및 캘린더  
-**Phase 4:** 통계 및 보상 시스템  
-**Phase 5:** 부모용 대시보드  
+### Phase 2: Firebase 연동 (진행 중)
+- [x] Firebase SDK 설정
+- [x] Auth/Firestore/Storage 서비스 코드
+- [x] 보안 규칙 작성
+- [ ] 로그인/회원가입 UI
+- [ ] 자녀 프로필 관리
 
-## 💡 추가 아이디어
+### Phase 3: 핵심 기능 (예정)
+- [ ] Web Speech API 연동
+- [ ] 일기 저장 및 조회
+- [ ] 일기 메일 발송
 
-- 하루에 여러 번 일기 작성 가능
-- 그림 그리기 기능 추가
-- 감정 변화 타임라인
-- 형제자매와 함께 사용 (프로필 분리)
-- 선생님과 공유 옵션 (선택적)
+### Phase 4: 캘린더 및 통계 (예정)
+- [ ] 캘린더 뷰
+- [ ] 감정 통계 차트
 
-이 기획이 도움이 되셨나요? 특정 부분을 더 자세히 설계하거나, 프로토타입 개발을 시작하고 싶으시면 말씀해 주세요!
+### Phase 5: 보상 시스템 (예정)
+- [ ] 뱃지 시스템
+- [ ] 연속 작성 추적
+
+## 환경 변수
+
+```env
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+## 문서
+
+- [PRD (상세 기획서)](./docs/prd.md)
+
+## 라이선스
+
+MIT License

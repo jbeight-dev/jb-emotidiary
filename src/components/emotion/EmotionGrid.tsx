@@ -18,10 +18,10 @@ interface EmotionGridProps {
 }
 
 export function EmotionGrid({ onSelect, selectedEmotion }: EmotionGridProps) {
-  const shuffledEmotions = useMemo(() => shuffleArray(EMOTION_LIST), []);
+  const shuffledEmotions = useMemo(() => shuffleArray(EMOTION_LIST).slice(0, 8), []);
 
   return (
-    <div className="grid grid-cols-5 gap-3 justify-items-center">
+    <div className="grid grid-cols-4 gap-3 justify-items-center">
       {shuffledEmotions.map((emotion) => (
         <EmotionButton
           key={emotion.type}

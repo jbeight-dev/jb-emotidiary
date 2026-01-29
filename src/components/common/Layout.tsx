@@ -42,9 +42,13 @@ export function Layout({
                 </svg>
               </button>
             )}
-            {title && (
+            {title ? (
               <h1 className="text-xl font-bold text-[var(--color-text-primary)]">
                 {title}
+              </h1>
+            ) : (
+              <h1 className="text-xl font-bold text-[var(--color-text-primary)]">
+                EmotiDiary
               </h1>
             )}
           </div>

@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import html2canvas from 'html2canvas';
 import { Layout, Button, Card } from '../components/common';
 import { EMOTIONS } from '../constants/emotions';
 import type { EmotionType } from '../types';
@@ -7,8 +9,43 @@ import type { EmotionType } from '../types';
 export function DiaryWritePage() {
   const { emotion } = useParams<{ emotion: EmotionType }>();
   const navigate = useNavigate();
+  const diaryRef = useRef<HTMLDivElement>(null);
+  const [content, setContent] = useState('');
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const emotionInfo = emotion ? EMOTIONS[emotion] : null;
+
+  const handleDownloadImage = async () => {
+    if (!diaryRef.current || !content.trim()) {
+      alert('일기 내용을 입력해주세요.');
+      return;
+    }
+
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(diaryRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+      });
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      const today = new Date().toISOString().split('T')[0];
+      link.download = `EmotiDiary_${today}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('이미지 저장 실패:', error);
+      alert(`이미지 저장에 실패했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   if (!emotionInfo) {
     return (
@@ -21,91 +58,161 @@ export function DiaryWritePage() {
   }
 
   return (
-    <Layout title="일기 쓰기" showBackButton onBack={() => navigate('/')}>
+    <Layout title="EmotiDiary" showBackButton onBack={() => navigate('/')}>
       <div className="flex flex-col gap-6">
-        {/* 선택된 감정 표시 */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center"
-        >
-          <div
-            className="w-24 h-24 rounded-full flex items-center justify-center mb-3"
-            style={{ backgroundColor: `${emotionInfo.color}40` }}
-          >
-            <span className="text-5xl">{emotionInfo.emoji}</span>
-          </div>
-          <span
-            className="px-4 py-1 rounded-full text-sm font-medium"
-            style={{
-              backgroundColor: `${emotionInfo.color}30`,
-              color: emotionInfo.color,
-            }}
-          >
-            {emotionInfo.label}
-          </span>
-        </motion.div>
-
-        {/* 질문 카드 */}
+        {/* 질문 카드 및 입력 영역 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
         >
           <Card padding="lg">
-            <p className="text-xl font-medium text-[var(--color-text-primary)] text-center mb-6">
+            {/* 선택된 감정 표시 */}
+            <div className="flex flex-col items-center mb-4">
+              <div
+                className="w-16 h-16 rounded-full relative mb-2"
+                style={{ backgroundColor: `${emotionInfo.color}40` }}
+              >
+                <span
+                  className="absolute text-4xl"
+                  style={{
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    lineHeight: 1,
+                  }}
+                >
+                  {emotionInfo.emoji}
+                </span>
+              </div>
+              <span
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{
+                  backgroundColor: `${emotionInfo.color}30`,
+                  color: emotionInfo.color,
+                }}
+              >
+                {emotionInfo.label}
+              </span>
+            </div>
+
+            <p className="text-xl font-medium text-[var(--color-text-primary)] text-center mb-4">
               {emotionInfo.question}
             </p>
 
-            {/* 음성 녹음 버튼 (Phase 3에서 구현) */}
-            <div className="flex flex-col items-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-20 h-20 rounded-full bg-red-500 flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
-                aria-label="녹음 시작"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="white"
-                  className="w-10 h-10"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
-                  />
-                </svg>
-              </motion.button>
-              <p className="text-sm text-[var(--color-text-secondary)]">버튼을 눌러 말해보세요</p>
-            </div>
-
-            {/* 텍스트 입력 영역 (임시) */}
-            <div className="mt-6">
-              <textarea
-                className="w-full p-4 border border-[var(--color-border)] rounded-xl resize-none bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[#6B8AFD] focus:border-transparent transition-colors"
-                rows={4}
-                placeholder="여기에 직접 써도 돼요..."
-              />
-            </div>
+            {/* 텍스트 입력 영역 */}
+            <textarea
+              className="w-full p-4 border border-[var(--color-border)] rounded-xl resize-none bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[#6B8AFD] focus:border-transparent transition-colors"
+              rows={4}
+              placeholder="오늘 있었던 일을 이야기해줘!"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
           </Card>
         </motion.div>
+
+        {/* 이미지로 캡처될 영역 - html2canvas 호환을 위해 hex 색상 사용 */}
+        {content && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <p
+              className="text-sm mb-2"
+              style={{ color: '#6b7280' }}
+            >
+              미리보기
+            </p>
+            <div
+              ref={diaryRef}
+              className="p-6 rounded-2xl relative overflow-hidden"
+              style={{ backgroundColor: emotion === 'love' ? '#fff0f5' : '#ffffff' }}
+            >
+              {/* 사랑해요 감정일 때 하트 배경 */}
+              {emotion === 'love' && (
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ opacity: 0.15 }}
+                >
+                  {[...Array(12)].map((_, i) => (
+                    <span
+                      key={i}
+                      className="absolute"
+                      style={{
+                        fontSize: `${20 + (i % 3) * 10}px`,
+                        top: `${(i * 25) % 100}%`,
+                        left: `${(i * 30 + 10) % 100}%`,
+                        transform: `rotate(${i * 15 - 20}deg)`,
+                      }}
+                    >
+                      ❤️
+                    </span>
+                  ))}
+                </div>
+              )}
+              {/* 날짜 */}
+              <p
+                className="text-center text-sm mb-2"
+                style={{ color: '#6b7280' }}
+              >
+                {new Date().toLocaleDateString('ko-KR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  weekday: 'long',
+                })}
+              </p>
+
+              {/* 선택된 감정 표시 */}
+              <div className="flex flex-col items-center">
+                <div
+                  className="w-24 h-24 rounded-full flex items-center justify-center mb-2"
+                  style={{ backgroundColor: `${emotionInfo.color}40` }}
+                >
+                  <span className="text-5xl" style={{ lineHeight: 1 }}>
+                    {emotionInfo.emoji}
+                  </span>
+                </div>
+                <span
+                  className="px-4 py-1 rounded-full text-sm font-medium"
+                  style={{
+                    backgroundColor: `${emotionInfo.color}30`,
+                    color: emotionInfo.color,
+                  }}
+                >
+                  {emotionInfo.label}
+                </span>
+              </div>
+
+              {/* 일기 내용 */}
+              <div
+                className="mt-3 p-4 rounded-xl"
+                style={{ backgroundColor: '#f9fafb' }}
+              >
+                <p className="whitespace-pre-wrap" style={{ color: '#1f2937' }}>
+                  {content}
+                </p>
+              </div>
+
+              {/* 워터마크 */}
+              <p
+                className="text-center text-xs mt-3"
+                style={{ color: '#9ca3af' }}
+              >
+                EmotiDiary
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         {/* 저장 버튼 */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="flex flex-col gap-3"
         >
-          <Button fullWidth size="lg">
-            일기 저장하기
-          </Button>
-          <Button fullWidth size="lg" variant="secondary">
-            일기 메일로 보내기
+          <Button fullWidth size="lg" onClick={handleDownloadImage} disabled={isDownloading}>
+            {isDownloading ? '저장 중...' : '이미지로 저장하기'}
           </Button>
         </motion.div>
       </div>

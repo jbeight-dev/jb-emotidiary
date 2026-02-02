@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
 
 interface LayoutProps {
@@ -57,7 +58,38 @@ export function Layout({
       </header>
 
       {/* Main Content */}
-      <main className="max-w-lg mx-auto px-4 py-6">{children}</main>
+      <main className="max-w-lg mx-auto px-4 py-6 pb-24">{children}</main>
+
+      {/* Footer */}
+      <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg-header)]">
+        <div className="max-w-lg mx-auto px-4 py-6">
+          <div className="flex justify-center gap-4 text-sm text-[var(--color-text-secondary)]">
+            <Link
+              to="/about"
+              className="hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              서비스 소개
+            </Link>
+            <span>|</span>
+            <Link
+              to="/privacy"
+              className="hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              개인정보처리방침
+            </Link>
+            <span>|</span>
+            <Link
+              to="/terms"
+              className="hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              이용약관
+            </Link>
+          </div>
+          <p className="text-center text-xs text-[var(--color-text-secondary)] mt-3">
+            © 2026 EmotiDiary. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

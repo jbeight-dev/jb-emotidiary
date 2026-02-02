@@ -1,0 +1,6 @@
+# EmotiDiary robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://emotidiary-202601.web.app/sitemap.xml

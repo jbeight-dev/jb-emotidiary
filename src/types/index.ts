@@ -16,6 +16,7 @@ export interface EmotionInfo {
   type: EmotionType;
   emoji: string;
   label: string;
+  labelEn: string;
   color: string;
   question: string;
   questionEn: string;

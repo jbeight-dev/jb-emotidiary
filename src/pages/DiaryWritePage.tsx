@@ -152,17 +152,9 @@ export function DiaryWritePage() {
                 </div>
               </div>
 
-              {/* 질문 */}
-              <p
-                className="text-base font-medium mt-4 mb-3"
-                style={{ color: emotionInfo.color }}
-              >
-                {emotionInfo.question}
-              </p>
-
               {/* 내용 */}
-              <div className="flex-1 overflow-hidden">
-                <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap line-clamp-6">
+              <div className="flex-1 overflow-hidden mt-4">
+                <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap line-clamp-8">
                   {diaryContent}
                 </p>
               </div>

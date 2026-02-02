@@ -7,6 +7,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '행복해요',
     color: '#FFE066',
     question: '오늘 무엇이 행복했나요?',
+    questionEn: 'What made you happy today?',
   },
   sad: {
     type: 'sad',
@@ -14,6 +15,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '슬퍼요',
     color: '#74B9FF',
     question: '무엇 때문에 슬펐나요?',
+    questionEn: 'What made you sad?',
   },
   angry: {
     type: 'angry',
@@ -21,6 +23,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '화나요',
     color: '#FF7675',
     question: '무엇 때문에 화가 났나요?',
+    questionEn: 'What made you angry?',
   },
   scared: {
     type: 'scared',
@@ -28,6 +31,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '무서워요',
     color: '#A29BFE',
     question: '무엇이 무서웠나요?',
+    questionEn: 'What scared you?',
   },
   tired: {
     type: 'tired',
@@ -35,13 +39,15 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '피곤해요',
     color: '#81ECEC',
     question: '오늘 무엇을 했나요?',
+    questionEn: 'What did you do today?',
   },
   love: {
     type: 'love',
-    emoji: '🤗',
+    emoji: '🥰',
     label: '사랑해요',
     color: '#FD79A8',
     question: '누구를 사랑하나요?',
+    questionEn: 'Who do you love?',
   },
   annoyed: {
     type: 'annoyed',
@@ -49,6 +55,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '짜증나요',
     color: '#FDCB6E',
     question: '무엇이 짜증났나요?',
+    questionEn: 'What annoyed you?',
   },
   calm: {
     type: 'calm',
@@ -56,6 +63,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '평온해요',
     color: '#55EFC4',
     question: '오늘 하루는 어땠나요?',
+    questionEn: 'How was your day?',
   },
   excited: {
     type: 'excited',
@@ -63,6 +71,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '신나요',
     color: '#FF9F43',
     question: '무엇이 신났나요?',
+    questionEn: 'What excited you?',
   },
   lonely: {
     type: 'lonely',
@@ -70,6 +79,7 @@ export const EMOTIONS: Record<EmotionType, EmotionInfo> = {
     label: '외로워요',
     color: '#636E72',
     question: '누구와 함께하고 싶나요?',
+    questionEn: 'Who do you want to be with?',
   },
 };
 

@@ -18,6 +18,7 @@ export interface EmotionInfo {
   label: string;
   color: string;
   question: string;
+  questionEn: string;
 }
 
 // 일기 엔트리

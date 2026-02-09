@@ -11,7 +11,9 @@ export function DiaryWritePage() {
   const navigate = useNavigate();
   const [diaryContent, setDiaryContent] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
+  const [showShareSuccess, setShowShareSuccess] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const emotionInfo = emotion ? EMOTIONS[emotion as EmotionType] : null;
@@ -58,6 +60,52 @@ export function DiaryWritePage() {
       alert('이미지 저장에 실패했어요. 다시 시도해주세요.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleShareToInstagram = async () => {
+    if (!previewRef.current || !diaryContent.trim()) return;
+
+    setIsSharing(true);
+    try {
+      const dataUrl = await toPng(previewRef.current, {
+        quality: 1.0,
+        pixelRatio: 2,
+        backgroundColor: '#FFFBF7',
+      });
+
+      // dataUrl을 Blob으로 변환
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const file = new File([blob], `emotidiary-${emotion}-${today.toISOString().split('T')[0]}.png`, {
+        type: 'image/png',
+      });
+
+      // Web Share API 지원 여부 확인
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'EmotiDiary',
+          text: `오늘의 감정: ${emotionInfo.label} ${emotionInfo.emoji}`,
+        });
+        setShowShareSuccess(true);
+        setTimeout(() => setShowShareSuccess(false), 3000);
+      } else {
+        // Web Share API 미지원 시 이미지 저장 후 안내
+        const link = document.createElement('a');
+        link.download = `emotidiary-${emotion}-${today.toISOString().split('T')[0]}.png`;
+        link.href = dataUrl;
+        link.click();
+        alert('이미지가 저장되었어요! Instagram 앱에서 직접 업로드해주세요.');
+      }
+    } catch (error) {
+      // 사용자가 공유를 취소한 경우는 에러로 처리하지 않음
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('공유 실패:', error);
+        alert('공유에 실패했어요. 다시 시도해주세요.');
+      }
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -167,7 +215,7 @@ export function DiaryWritePage() {
           </motion.div>
         )}
 
-        {/* 저장 버튼 */}
+        {/* 저장 및 공유 버튼 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,6 +231,16 @@ export function DiaryWritePage() {
             {isSaving ? '저장 중...' : '이미지로 저장하기'}
           </Button>
 
+          <Button
+            fullWidth
+            size="lg"
+            variant="secondary"
+            onClick={handleShareToInstagram}
+            disabled={!diaryContent.trim() || isSharing}
+          >
+            {isSharing ? '공유 준비 중...' : '📸 Instagram에 공유하기'}
+          </Button>
+
           {showSaveSuccess && (
             <motion.p
               initial={{ opacity: 0, y: 10 }}
@@ -190,6 +248,16 @@ export function DiaryWritePage() {
               className="text-center text-sm text-green-600"
             >
               이미지가 저장되었어요!
+            </motion.p>
+          )}
+
+          {showShareSuccess && (
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center text-sm text-green-600"
+            >
+              공유가 완료되었어요!
             </motion.p>
           )}
         </motion.div>

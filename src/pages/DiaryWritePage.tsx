@@ -222,24 +222,26 @@ export function DiaryWritePage() {
           transition={{ delay: 0.3 }}
           className="flex flex-col gap-3"
         >
-          <Button
-            fullWidth
-            size="lg"
-            onClick={handleSaveImage}
-            disabled={!diaryContent.trim() || isSaving}
-          >
-            {isSaving ? '저장 중...' : '이미지로 저장하기'}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              fullWidth
+              size="lg"
+              onClick={handleSaveImage}
+              disabled={!diaryContent.trim() || isSaving}
+            >
+              {isSaving ? '저장 중...' : '💾 저장'}
+            </Button>
 
-          <Button
-            fullWidth
-            size="lg"
-            variant="secondary"
-            onClick={handleShareToInstagram}
-            disabled={!diaryContent.trim() || isSharing}
-          >
-            {isSharing ? '공유 준비 중...' : '📸 Instagram에 공유하기'}
-          </Button>
+            <Button
+              fullWidth
+              size="lg"
+              variant="secondary"
+              onClick={handleShareToInstagram}
+              disabled={!diaryContent.trim() || isSharing}
+            >
+              {isSharing ? '준비 중...' : '📸 공유'}
+            </Button>
+          </div>
 
           {showSaveSuccess && (
             <motion.p
